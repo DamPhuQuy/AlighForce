@@ -1,0 +1,25 @@
+# AlignForge SFT & LoRA Configuration
+dataset:
+  name: "grammarly/coedit"
+  task_filter: "gec"
+  max_train_samples: 1200
+  max_val_samples: 200
+
+common:
+  seed: 42
+  max_seq_len: 128
+  weight_decay: 0.01
+
+full_sft:
+  learning_rate: 5.0e-5
+  batch_size: 16
+  epochs: 3
+
+lora:
+  r: 8
+  alpha: 16
+  dropout: 0.05
+  target_modules: ["q_proj", "v_proj"]
+  learning_rate: 2.0e-4
+  batch_size: 16
+  epochs: 3

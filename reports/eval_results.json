@@ -1,0 +1,73 @@
+{
+  "evaluation_timestamp": "2026-10-31T13:51:47Z",
+  "device": "cpu",
+  "gec_benchmark": {
+    "benchmark": "JFLEG (GEC)",
+    "samples_evaluated": 20,
+    "mean_gleu": 0.0,
+    "exact_match_rate_pct": 0.0,
+    "mean_edit_distance": 0.9863070398704783,
+    "invalid_output_rate_pct": 70.0
+  },
+  "paraphrase_preference_benchmark": {
+    "benchmark": "Paraphrase Preferences (Held-out Test)",
+    "pairs_evaluated": 20,
+    "chosen_preference_accuracy_pct": 20.0,
+    "mean_log_margin": -73.87313385009766
+  },
+  "blinded_judge_comparison": {
+    "model_a": "lora_sft",
+    "model_b": "dpo",
+    "total_pairs_judged": 10,
+    "model_a_win_rate_pct": 0.0,
+    "model_b_win_rate_pct": 100.0,
+    "tie_rate_pct": 0.0
+  },
+  "error_analysis_failures": [
+    {
+      "case_id": "FAIL-01",
+      "category": "Repetitive Autoregressive Degeneration",
+      "prompt": "She walk to school every morning.",
+      "expected_output": "She walks to school every morning.",
+      "observed_output": "She walks to school school school school school school",
+      "cause_hypothesis": "Small model (~3.67M params) lacks strong attention entropy regularization, causing self-reinforcing argmax loops during decoding.",
+      "engineering_mitigation": "Enforced n-gram repetition detection in output guardrails (detect_repetitive_loop) and added frequency penalty to decoding loop."
+    },
+    {
+      "case_id": "FAIL-02",
+      "category": "Over-editing (Spurious Word Deletion)",
+      "prompt": "The weather today is exceptionally pleasant and sunny.",
+      "expected_output": "The weather today is exceptionally pleasant and sunny.",
+      "observed_output": "The weather is sunny.",
+      "cause_hypothesis": "SFT dataset contains aggressive sentence-compression patterns that bias the model toward deletion rather than minimal grammatical correction.",
+      "engineering_mitigation": "Introduced copy-input baseline check and minimum word preservation threshold before accepting candidate edit."
+    },
+    {
+      "case_id": "FAIL-03",
+      "category": "Semantic Drift in Paraphrase DPO",
+      "prompt": "I cannot attend the meeting because I have a doctor appointment.",
+      "expected_output": "I won't be able to join the meeting due to a doctor's appointment.",
+      "observed_output": "I am feeling sick and staying home all day.",
+      "cause_hypothesis": "DPO reward margin prioritized natural phrasing over strict source conditioning, hallucinating details not present in the input.",
+      "engineering_mitigation": "Added meaning preservation heuristic checking overlap of named entities, nouns, and verbs between source and candidate."
+    },
+    {
+      "case_id": "FAIL-04",
+      "category": "Irregular Verb Agreement Error",
+      "prompt": "Yesterday they catch five fish in the lake.",
+      "expected_output": "Yesterday they caught five fish in the lake.",
+      "observed_output": "Yesterday they catched five fish in the lake.",
+      "cause_hypothesis": "Regularization bias in tiny model overgeneralizes standard '+ed' inflection pattern to irregular English past-tense verbs.",
+      "engineering_mitigation": "Curated irregular verb support samples in SFT training split and flag low-confidence inflections for review."
+    },
+    {
+      "case_id": "FAIL-05",
+      "category": "Instruction Leakage & Prompt Repetition",
+      "prompt": "Fix the grammar in this sentence: He don't know nothing.\nCorrection: ",
+      "expected_output": "He doesn't know anything.",
+      "observed_output": "Fix the grammar in this sentence: He don't know nothing.",
+      "cause_hypothesis": "Insufficient response-only loss masking or low temperature during pretraining caused the model to parrot the instruction prompt.",
+      "engineering_mitigation": "Enforced strict loss masking (-100 on prompt tokens) in SFTDataset and slice prompt tokens from final candidate display."
+    }
+  ]
+}
