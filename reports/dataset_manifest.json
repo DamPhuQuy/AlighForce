@@ -1,0 +1,36 @@
+{
+  "manifest_version": "1.0.0",
+  "policy": "Strict public data ingestion without synthetic labels",
+  "datasets": {
+    "tinystories": {
+      "repo_id": "roneneldan/TinyStories",
+      "license": "CDLA-Sharing-1.0",
+      "description": "Short narrative stories with basic English vocabulary",
+      "role": "Pre-training C0"
+    },
+    "coedit_gec": {
+      "repo_id": "grammarly/coedit",
+      "license": "Apache-2.0",
+      "description": "Grammar error correction source-target pairs with task instructions",
+      "role": "SFT C1-full and C1-lora"
+    },
+    "paraphrase_dpo": {
+      "repo_id": "alecccdd/paraphrasing-preferences-orpo-dpo",
+      "license": "Dataset Card Review Required",
+      "description": "Paraphrase preference pairs with prompt, chosen, and rejected completions",
+      "role": "DPO Preference Alignment C2-dpo"
+    },
+    "jfleg": {
+      "repo_id": "jhu-clsp/jfleg",
+      "license": "CC BY-NC-SA 4.0",
+      "description": "Multi-reference human fluency GEC test benchmark (4 references per sentence)",
+      "role": "Held-out GEC evaluation"
+    },
+    "prompt_injections": {
+      "repo_id": "deepset/prompt-injections",
+      "license": "Evaluation subset",
+      "description": "Prompt injection payloads vs benign commands",
+      "role": "Supplemental input guardrail evaluation"
+    }
+  }
+}
