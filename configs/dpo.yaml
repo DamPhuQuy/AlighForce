@@ -1,0 +1,14 @@
+# AlignForge DPO Configuration
+dataset:
+  name: "alecccdd/paraphrasing-preferences-orpo-dpo"
+  max_train_samples: 852
+  max_val_samples: 95
+
+dpo:
+  seed: 42
+  beta: 0.1
+  learning_rate: 1.0e-5
+  batch_size: 8
+  epochs: 2
+  max_seq_len: 128
+  reference_checkpoint: "artifacts/checkpoints/c1_lora.pt"
