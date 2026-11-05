@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "sach-capability-catalog-v1",
+  "title": "SACH Capability Catalog Schema v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "capabilities"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "enum": ["1.0"]
+    },
+    "catalog_id": {
+      "type": "string"
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/capability"
+      }
+    }
+  },
+  "$defs": {
+    "capability": {
+      "type": "object",
+      "required": [
+        "capability_id",
+        "kind",
+        "version",
+        "description",
+        "triggers",
+        "non_triggers",
+        "side_effects",
+        "fallback",
+        "verifier"
+      ],
+      "properties": {
+        "capability_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9_-]+$"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "tool",
+            "skill",
+            "mcp_service",
+            "lsp_server",
+            "script"
+          ]
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string",
+          "minLength": 5
+        },
+        "triggers": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "non_triggers": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "required_permissions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "preconditions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "postconditions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "side_effects": {
+          "type": "string",
+          "enum": [
+            "none",
+            "read_only",
+            "idempotent_write",
+            "stateful_mutation"
+          ]
+        },
+        "timeout_seconds": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "retry_policy": {
+          "type": "object",
+          "properties": {
+            "max_retries": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "safe_on_timeout": {
+              "type": "boolean"
+            },
+            "requires_state_check_before_retry": {
+              "type": "boolean"
+            }
+          }
+        },
+        "fallback": {
+          "type": "string",
+          "minLength": 1
+        },
+        "verifier": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

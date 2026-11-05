@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.0",
+  "catalog_id": "swe-example-capabilities",
+  "capabilities": [
+    {
+      "capability_id": "example-rg-search",
+      "kind": "tool",
+      "version": "1.0.0",
+      "description": "Example pattern search tool demonstrating capability contract shape without asserting installation.",
+      "triggers": [
+        "locate symbol definitions across codebase",
+        "search text patterns in project files"
+      ],
+      "non_triggers": [
+        "semantic AST refactoring",
+        "modifying file contents"
+      ],
+      "required_permissions": [
+        "read_workspace"
+      ],
+      "preconditions": [
+        "workspace directory exists and is readable"
+      ],
+      "postconditions": [
+        "matches returned with file path and line number"
+      ],
+      "side_effects": "read_only",
+      "timeout_seconds": 30,
+      "retry_policy": {
+        "max_retries": 1,
+        "safe_on_timeout": true,
+        "requires_state_check_before_retry": false
+      },
+      "fallback": "Standard host file reading and manual inspection",
+      "verifier": "Exit code 0 and non-empty stdout on matching pattern"
+    }
+  ]
+}

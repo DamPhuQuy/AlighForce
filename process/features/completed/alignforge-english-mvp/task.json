@@ -1,0 +1,76 @@
+{
+  "task_id": "TASK-ALIGNFORGE-MVP",
+  "title": "AlignForge English 4-Week Capstone Engineering Plan",
+  "status": "COMPLETED",
+  "spec_ref": "SPEC-ALIGNFORGE-MVP",
+  "dependencies": [],
+  "execution_frontier": false,
+  "allowed_files": [
+    ".agents/TASK.md",
+    "AGENTS.md",
+    "configs/model.yaml",
+    "configs/sft.yaml",
+    "configs/dpo.yaml",
+    "process/features/active/alignforge-english-mvp/task.md",
+    "process/features/active/alignforge-english-mvp/spec.json",
+    "process/features/active/alignforge-english-mvp/task.json",
+    "process/features/active/alignforge-english-mvp/research-dossier.json",
+    "process/features/active/alignforge-english-mvp/debate-ledger.json",
+    "process/features/active/alignforge-english-mvp/tasks/task-01-foundation.json",
+    "process/features/active/alignforge-english-mvp/tasks/task-02-base-kvcache.json",
+    "process/features/active/alignforge-english-mvp/tasks/task-03-alignment-lora-dpo.json",
+    "process/features/active/alignforge-english-mvp/tasks/task-04-guardrails-eval-report.json",
+    "src/alignforge/__init__.py",
+    "src/alignforge/tokenizer.py",
+    "src/alignforge/model.py",
+    "src/alignforge/kv_cache.py",
+    "src/alignforge/generate.py",
+    "src/alignforge/data.py",
+    "src/alignforge/train_pretrain.py",
+    "src/alignforge/train_sft.py",
+    "src/alignforge/lora.py",
+    "src/alignforge/train_dpo.py",
+    "src/alignforge/safety.py",
+    "src/alignforge/evaluate.py",
+    "src/alignforge/cli.py",
+    "tests/test_tokenizer.py",
+    "tests/test_model.py",
+    "tests/test_cache.py",
+    "tests/test_lora.py",
+    "tests/test_dpo.py",
+    "tests/test_safety.py",
+    "tests/test_contracts.py",
+    "pyproject.toml",
+    "reports/kv_cache_profiling.csv",
+    "reports/eval_results.json",
+    "README.md"
+  ],
+  "binary_goals": [
+    {
+      "id": "GOAL-1",
+      "description": "Week 1 Foundation: Custom BPE tokenizer (vocab 2048) and pure PyTorch decoder-only Transformer pass shape, causality, and gradient flow unit tests",
+      "passed": true
+    },
+    {
+      "id": "GOAL-2",
+      "description": "Week 2 Core Model: Base pretraining C0 completed on TinyStories subset; dynamic KV Cache verified with exact logits equivalence and profiling across 128, 512, 1024, 2048 tokens",
+      "passed": true
+    },
+    {
+      "id": "GOAL-3",
+      "description": "Week 3 Alignment: Full SFT vs self-written LoRA comparison on CoEdIT GEC; DPO alignment trained against frozen C1-lora reference on paraphrase preference data",
+      "passed": true
+    },
+    {
+      "id": "GOAL-4",
+      "description": "Week 4 Product & Evaluation: Input/output guardrails active; JFLEG automated evaluation; blinded LLM judge comparisons; 5 analyzed failure cases; 6-8 page scientific report and CLI demo",
+      "passed": true
+    }
+  ],
+  "verifier": {
+    "command": "python3 .agents/harness.py validate --spec process/features/active/alignforge-english-mvp/spec.json --task process/features/active/alignforge-english-mvp/task.json",
+    "timeout_seconds": 30,
+    "falsification_proven": true,
+    "evidence_ref": "uv run pytest (25 passed in 2.82s, exit 0, all 4 milestones completed and verified)"
+  }
+}

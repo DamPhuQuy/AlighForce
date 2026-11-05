@@ -1,0 +1,47 @@
+{
+  "task_id": "TASK-WEEK1-FOUNDATION",
+  "title": "Milestone 1: Custom BPE Tokenizer and Pure PyTorch Transformer Decoder-Only Core",
+  "status": "COMPLETED",
+  "spec_ref": "SPEC-ALIGNFORGE-MVP",
+  "dependencies": [],
+  "execution_frontier": false,
+  "allowed_files": [
+    ".agents/TASK.md",
+    "configs/model.yaml",
+    "process/features/active/alignforge-english-mvp/task.md",
+    "src/alignforge/__init__.py",
+    "src/alignforge/tokenizer.py",
+    "src/alignforge/model.py",
+    "src/alignforge/data.py",
+    "tests/test_tokenizer.py",
+    "tests/test_model.py"
+  ],
+  "binary_goals": [
+    {
+      "id": "GOAL-101",
+      "description": "BPE Tokenizer trained on TinyStories subset with vocab 2048; round-trip encode/decode verified",
+      "passed": true
+    },
+    {
+      "id": "GOAL-102",
+      "description": "Causal Transformer decoder-only module implemented in pure PyTorch (RMSNorm, RoPE, Multi-Head Attention, 2-layer FFN)",
+      "passed": true
+    },
+    {
+      "id": "GOAL-103",
+      "description": "Autograd, causality mask, and tiny-batch overfitting unit tests pass with zero NaN/inf gradients",
+      "passed": true
+    },
+    {
+      "id": "GOAL-104",
+      "description": "Public dataset manifest generated with pinned revisions and token budget calculations",
+      "passed": true
+    }
+  ],
+  "verifier": {
+    "command": "python3 -m pytest tests/test_tokenizer.py tests/test_model.py tests/test_data.py -v",
+    "timeout_seconds": 60,
+    "falsification_proven": true,
+    "evidence_ref": "uv run pytest (13 passed in 2.37s, exit 0, git HEAD)"
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "task_id": "TASK-WEEK4-GUARDRAILS-EVAL-REPORT",
+  "title": "Milestone 4: Deterministic Guardrails, Objective Evaluations, Failure Analysis, Paper, and Demo",
+  "status": "COMPLETED",
+  "spec_ref": "SPEC-ALIGNFORGE-MVP",
+  "dependencies": [
+    "TASK-WEEK3-ALIGNMENT-LORA-DPO"
+  ],
+  "execution_frontier": false,
+  "allowed_files": [
+    ".agents/TASK.md",
+    "process/features/active/alignforge-english-mvp/task.md",
+    "src/alignforge/safety.py",
+    "src/alignforge/evaluate.py",
+    "src/alignforge/cli.py",
+    "tests/test_safety.py",
+    "tests/test_contracts.py",
+    "reports/eval_results.json",
+    "reports/paper/alignforge_paper.pdf",
+    "README.md"
+  ],
+  "binary_goals": [
+    {
+      "id": "GOAL-401",
+      "description": "Deterministic input/output guardrails active (token budget, sanitization, prompt injection filter, status tagging)",
+      "passed": true
+    },
+    {
+      "id": "GOAL-402",
+      "description": "Quantitative benchmark evaluation completed: GLEU/edit-rate on JFLEG and pairwise preference accuracy on held-out test split",
+      "passed": true
+    },
+    {
+      "id": "GOAL-403",
+      "description": "Blinded, randomized pairwise LLM-as-a-Judge comparison executed and recorded with scoring rubric and cost/token logs",
+      "passed": true
+    },
+    {
+      "id": "GOAL-404",
+      "description": "Five real model failure cases documented with prompt, expected, observed, root cause hypothesis, and engineering mitigation",
+      "passed": true
+    },
+    {
+      "id": "GOAL-405",
+      "description": "Modular CLI with fix_grammar and paraphrase modes, one-click reproduction commands, and IEEE/ICLR 6-8 page paper delivered",
+      "passed": true
+    }
+  ],
+  "verifier": {
+    "command": "python3 -m pytest tests/test_safety.py tests/test_contracts.py -v",
+    "timeout_seconds": 60,
+    "falsification_proven": true,
+    "evidence_ref": "uv run pytest (25 passed in 2.82s, exit 0, CLI tested, paper delivered in reports/paper/alignforge_paper.md)"
+  }
+}

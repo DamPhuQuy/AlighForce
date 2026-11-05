@@ -1,0 +1,49 @@
+{
+  "task_id": "TASK-WEEK3-ALIGNMENT-LORA-DPO",
+  "title": "Milestone 3: LoRA vs Full SFT Comparison on CoEdIT GEC and DPO Preference Alignment",
+  "status": "COMPLETED",
+  "spec_ref": "SPEC-ALIGNFORGE-MVP",
+  "dependencies": [
+    "TASK-WEEK2-BASE-KVCACHE"
+  ],
+  "execution_frontier": false,
+  "allowed_files": [
+    ".agents/TASK.md",
+    "configs/sft.yaml",
+    "configs/dpo.yaml",
+    "process/features/active/alignforge-english-mvp/task.md",
+    "src/alignforge/lora.py",
+    "src/alignforge/train_sft.py",
+    "src/alignforge/train_dpo.py",
+    "tests/test_lora.py",
+    "tests/test_dpo.py"
+  ],
+  "binary_goals": [
+    {
+      "id": "GOAL-301",
+      "description": "Hand-coded LoRA module (r=8, alpha=16) attached to Wq and Wv with base model weights strictly frozen",
+      "passed": true
+    },
+    {
+      "id": "GOAL-302",
+      "description": "Controlled Full SFT vs LoRA SFT execution on CoEdIT GEC split comparing trainable params, peak VRAM, time, and validation loss",
+      "passed": true
+    },
+    {
+      "id": "GOAL-303",
+      "description": "Hand-coded DPO objective with response-token masking verified with unit tests and gradient sanity checks",
+      "passed": true
+    },
+    {
+      "id": "GOAL-304",
+      "description": "DPO policy C2-dpo trained against frozen C1-lora reference on paraphrase preference dataset, logging loss curves and preference margin gains",
+      "passed": true
+    }
+  ],
+  "verifier": {
+    "command": "python3 -m pytest tests/test_lora.py tests/test_dpo.py -v",
+    "timeout_seconds": 120,
+    "falsification_proven": true,
+    "evidence_ref": "uv run pytest tests/test_lora.py tests/test_dpo.py (7 passed in 1.83s, exit 0, checkpoints c1_full, c1_lora, c2_dpo verified)"
+  }
+}

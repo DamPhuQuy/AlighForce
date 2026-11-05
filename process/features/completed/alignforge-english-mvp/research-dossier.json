@@ -1,0 +1,162 @@
+{
+  "schema_version": "2.0",
+  "task_id": "TASK-ALIGNFORGE-MVP",
+  "decision_question": "How to design, adapt, and evaluate a from-scratch ~3M parameter Transformer for English grammar correction and paraphrase preference alignment under a 4-week single-GPU budget without generating synthetic labels?",
+  "sources": [
+    {
+      "source_id": "SRC-TINYSTORIES",
+      "title": "TinyStories: How Small Can Language Models Be and Still Speak Coherent English?",
+      "url_or_doi": "https://arxiv.org/abs/2305.07759",
+      "source_kind": "peer_reviewed_paper",
+      "publication_status": "preprint",
+      "read_depth": "full",
+      "accessed_or_published": "2023-05-12",
+      "limitations": "Preprint; demonstrates English syntax acquisition on small parameter budgets (1M-33M) for narrative text, but does not provide instruction-following or grammar editing supervision."
+    },
+    {
+      "source_id": "SRC-COEDIT",
+      "title": "CoEdIT: Text Editing by Task-Specific Instruction Tuning",
+      "url_or_doi": "https://arxiv.org/abs/2305.09857",
+      "source_kind": "peer_reviewed_paper",
+      "publication_status": "preprint",
+      "read_depth": "full",
+      "accessed_or_published": "2023-05-16",
+      "limitations": "Preprint; uses T5 foundation models (770M-3B); our 3M model will achieve lower absolute GLEU, making fair baseline comparison and error analysis crucial."
+    },
+    {
+      "source_id": "SRC-LORA",
+      "title": "LoRA: Low-Rank Adaptation of Large Language Models",
+      "url_or_doi": "https://arxiv.org/abs/2106.09685",
+      "source_kind": "peer_reviewed_paper",
+      "publication_status": "peer_reviewed",
+      "read_depth": "full",
+      "accessed_or_published": "2021-10-16",
+      "limitations": "Evaluated primarily on large models (RoBERTa, GPT-2/3); low-rank adaptation on a 3M model requires careful rank selection (r=8) to ensure expressive adapter capacity without overfitting."
+    },
+    {
+      "source_id": "SRC-DPO",
+      "title": "Direct Preference Optimization: Your Language Model is Secretly a Reward Model",
+      "url_or_doi": "https://arxiv.org/abs/2305.18290",
+      "source_kind": "peer_reviewed_paper",
+      "publication_status": "peer_reviewed",
+      "read_depth": "full",
+      "accessed_or_published": "2023-05-29",
+      "limitations": "Requires a well-calibrated reference model policy and stable beta coefficient; preference pairs must be strictly paired under identical prompt contexts."
+    },
+    {
+      "source_id": "SRC-JFLEG",
+      "title": "JFLEG: A Fluency-Oriented Corpus for GEC Evaluation",
+      "url_or_doi": "https://arxiv.org/abs/1702.04066",
+      "source_kind": "peer_reviewed_paper",
+      "publication_status": "peer_reviewed",
+      "read_depth": "full",
+      "accessed_or_published": "2017-02-14",
+      "limitations": "Compact evaluation corpus (747 test sentences) with 4 human reference rewrites; multi-reference GLEU metric must be evaluated without contamination from training sets."
+    },
+    {
+      "source_id": "SRC-PROMPT-INJECT",
+      "title": "deepset/prompt-injections Dataset",
+      "url_or_doi": "https://huggingface.co/datasets/deepset/prompt-injections",
+      "source_kind": "industry_benchmark",
+      "publication_status": "community_post",
+      "read_depth": "sections",
+      "accessed_or_published": "2023-01-01",
+      "limitations": "Evaluates known prompt injection vectors; supplemental evaluation only, not an exhaustive jailbreak or safety certification."
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "CLM-KV-CACHE",
+      "statement": "KV Cache stores per-layer key and value projection tensors during autoregressive generation, eliminating redundant historical recomputations and ensuring O(1) attention compute per decoded token.",
+      "source_ids": [
+        "SRC-TINYSTORIES"
+      ],
+      "section_or_location": "Section 2 Architecture & Decoding",
+      "epistemic_status": "reported"
+    },
+    {
+      "claim_id": "CLM-LORA-EFFICIENCY",
+      "statement": "Attaching low-rank adapter matrices to Wq and Wv attention projections with rank r=8 freezes base model weights and reduces trainable parameters by over 80% while preserving editing adaptation.",
+      "source_ids": [
+        "SRC-LORA"
+      ],
+      "section_or_location": "Section 3 Method & Parameter Efficiency",
+      "epistemic_status": "reported"
+    },
+    {
+      "claim_id": "CLM-DPO-OBJECTIVE",
+      "statement": "Direct Preference Optimization trains policy parameters using response-only log-likelihood ratios relative to a frozen reference policy without fitting a separate reward model or executing reinforcement learning rollouts.",
+      "source_ids": [
+        "SRC-DPO"
+      ],
+      "section_or_location": "Section 4 Direct Preference Optimization",
+      "epistemic_status": "reported"
+    },
+    {
+      "claim_id": "CLM-TASK-DISTINCTION",
+      "statement": "Grammar error correction and paraphrase generation are distinct tasks; empirical improvements in paraphrase preference win rate under DPO do not substantiate claims of grammatical error correction capability.",
+      "source_ids": [
+        "SRC-COEDIT",
+        "SRC-DPO"
+      ],
+      "section_or_location": "Section 1 Task Taxonomy",
+      "epistemic_status": "reported"
+    },
+    {
+      "claim_id": "CLM-NO-SYNTHETIC-LABELS",
+      "statement": "All training and evaluation data must derive exclusively from existing fields in public datasets (tgt, chosen, rejected) without generating synthetic negative pairs or hand-crafted labels.",
+      "source_ids": [
+        "SRC-COEDIT",
+        "SRC-DPO",
+        "SRC-JFLEG"
+      ],
+      "section_or_location": "Dataset Documentation & Methodology",
+      "epistemic_status": "reported"
+    }
+  ],
+  "hypotheses": [
+    {
+      "id": "HYP-01",
+      "statement": "Self-written LoRA on Wq and Wv will train with >80% fewer trainable parameters and lower peak VRAM than full SFT while retaining at least 85% of full SFT edit competence on validation loss.",
+      "falsifiable_test": "Execute controlled training runs for C1-full vs C1-lora under identical optimizer and epoch schedules, measuring parameter counts, peak VRAM via torch.cuda.max_memory_allocated(), and held-out validation cross-entropy.",
+      "status": "untested"
+    },
+    {
+      "id": "HYP-02",
+      "statement": "Dynamic KV Cache per-layer will achieve monotonic speedup in next-token latency (TPOT) across context lengths 128, 512, 1024, and 2048 with exact numerical equivalence in generated logits compared to uncached decoding.",
+      "falsifiable_test": "Run automated profiling benchmark asserting torch.allclose(cached_logits, uncached_logits, atol=1e-5) and recording TTFT, TPOT, and throughput across the 4 context lengths.",
+      "status": "untested"
+    },
+    {
+      "id": "HYP-03",
+      "statement": "DPO alignment on paraphrasing preferences will increase chosen-over-rejected conditional log-likelihood margin on held-out validation pairs relative to the frozen C1-lora baseline policy.",
+      "falsifiable_test": "Evaluate margin log pi_theta(y_w|x) - log pi_theta(y_l|x) on the 95 validation pairs of alecccdd/paraphrasing-preferences-orpo-dpo before and after DPO training.",
+      "status": "untested"
+    }
+  ],
+  "decision": {
+    "chosen_option": "Modular PyTorch causal decoder-only LM (~3M params, 4 layers, d_model=256, 4 heads, vocab 2048) with custom KV Cache, self-written LoRA on Wq/Wv, DPO with frozen C1-lora reference, deterministic guardrails, and automated evaluation on JFLEG and held-out preferences.",
+    "rationale": "Directly satisfies all mandatory examination requirements and Track B specifications while strictly adhering to the 4-week scope, single-GPU hardware budget, and no-labeling data policy.",
+    "mitigated_risks": "Mitigates capacity limitations by establishing honest baseline evaluations and clear research questions; mitigates memory and latency risks via isolated profiling; mitigates safety vulnerabilities with deterministic application guardrails."
+  },
+  "execution_readiness": {
+    "ready": true,
+    "evidence_refs": [
+      "CLM-KV-CACHE",
+      "CLM-LORA-EFFICIENCY",
+      "CLM-DPO-OBJECTIVE",
+      "CLM-TASK-DISTINCTION",
+      "CLM-NO-SYNTHETIC-LABELS",
+      "SRC-TINYSTORIES",
+      "SRC-COEDIT",
+      "SRC-LORA",
+      "SRC-DPO",
+      "SRC-JFLEG",
+      "SRC-PROMPT-INJECT"
+    ],
+    "unresolved_uncertainties": [
+      "Available GPU VRAM during pretraining vs batch size; will run hardware pilot in Week 1",
+      "Distribution of sequence lengths in alecccdd/paraphrasing-preferences-orpo-dpo to determine if context_length=128 retains sufficient pairs or requires 256"
+    ]
+  }
+}

@@ -1,0 +1,213 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "sach-research-dossier-v2",
+  "title": "SACH Research Dossier Schema v2",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "task_id",
+    "decision_question",
+    "sources",
+    "claims"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "enum": ["2.0"]
+    },
+    "task_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "decision_question": {
+      "type": "string",
+      "minLength": 5
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/source"
+      }
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/claim"
+      }
+    },
+    "hypotheses": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/hypothesis"
+      }
+    },
+    "decision": {
+      "type": "object",
+      "properties": {
+        "chosen_option": {
+          "type": "string"
+        },
+        "rationale": {
+          "type": "string"
+        },
+        "mitigated_risks": {
+          "type": "string"
+        }
+      }
+    },
+    "execution_readiness": {
+      "type": "object",
+      "required": [
+        "ready",
+        "evidence_refs"
+      ],
+      "properties": {
+        "ready": {
+          "type": "boolean"
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "unresolved_uncertainties": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "required": [
+        "source_id",
+        "title",
+        "url_or_doi",
+        "source_kind",
+        "publication_status"
+      ],
+      "properties": {
+        "source_id": {
+          "type": "string",
+          "pattern": "^SRC-[A-Za-z0-9_-]+$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 3
+        },
+        "url_or_doi": {
+          "type": "string",
+          "minLength": 5
+        },
+        "source_kind": {
+          "type": "string",
+          "enum": [
+            "spec_standard",
+            "peer_reviewed_paper",
+            "vendor_docs",
+            "industry_benchmark",
+            "community_anecdotal",
+            "local_empirical"
+          ]
+        },
+        "publication_status": {
+          "type": "string",
+          "enum": [
+            "peer_reviewed",
+            "preprint",
+            "vendor_official",
+            "community_post",
+            "unknown"
+          ]
+        },
+        "read_depth": {
+          "type": "string",
+          "enum": [
+            "abstract_only",
+            "sections",
+            "full"
+          ]
+        },
+        "accessed_or_published": {
+          "type": "string"
+        },
+        "limitations": {
+          "type": "string"
+        }
+      }
+    },
+    "claim": {
+      "type": "object",
+      "required": [
+        "claim_id",
+        "statement",
+        "source_ids",
+        "epistemic_status"
+      ],
+      "properties": {
+        "claim_id": {
+          "type": "string",
+          "pattern": "^CLM-[A-Za-z0-9_-]+$"
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 5
+        },
+        "source_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "section_or_location": {
+          "type": "string"
+        },
+        "epistemic_status": {
+          "type": "string",
+          "enum": [
+            "observed",
+            "reported",
+            "inferred",
+            "unverified"
+          ]
+        }
+      }
+    },
+    "hypothesis": {
+      "type": "object",
+      "required": [
+        "id",
+        "statement",
+        "falsifiable_test"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 5
+        },
+        "falsifiable_test": {
+          "type": "string",
+          "minLength": 5
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "untested",
+            "supported",
+            "falsified"
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "task_id": "TASK-CLEAN-ARCH-OOP",
+  "title": "Refactor AlignForge into Domain-Driven Clean Architecture with Strict OOP and SOLID Principles",
+  "status": "COMPLETED",
+  "spec_ref": "SPEC-CLEAN-ARCH-OOP",
+  "dependencies": [],
+  "execution_frontier": false,
+  "allowed_files": [
+    ".agents/TASK.md",
+    "README.md",
+    "process/features/active/clean-architecture-oop-refactor/spec.json",
+    "process/features/active/clean-architecture-oop-refactor/task.json",
+    "process/features/active/clean-architecture-oop-refactor/task.md",
+    "src/alignforge/__init__.py",
+    "src/alignforge/cli.py",
+    "src/alignforge/data.py",
+    "src/alignforge/evaluate.py",
+    "src/alignforge/generate.py",
+    "src/alignforge/kv_cache.py",
+    "src/alignforge/lora.py",
+    "src/alignforge/model.py",
+    "src/alignforge/profile_cache.py",
+    "src/alignforge/safety.py",
+    "src/alignforge/tokenizer.py",
+    "src/alignforge/train_dpo.py",
+    "src/alignforge/train_pretrain.py",
+    "src/alignforge/train_sft.py",
+    "src/alignforge/domain/__init__.py",
+    "src/alignforge/domain/entities.py",
+    "src/alignforge/domain/interfaces.py",
+    "src/alignforge/domain/services.py",
+    "src/alignforge/application/__init__.py",
+    "src/alignforge/application/use_cases.py",
+    "src/alignforge/infrastructure/__init__.py",
+    "src/alignforge/infrastructure/models/__init__.py",
+    "src/alignforge/infrastructure/models/transformer.py",
+    "src/alignforge/infrastructure/models/layers.py",
+    "src/alignforge/infrastructure/models/lora.py",
+    "src/alignforge/infrastructure/cache/__init__.py",
+    "src/alignforge/infrastructure/cache/kv_cache.py",
+    "src/alignforge/infrastructure/tokenization/__init__.py",
+    "src/alignforge/infrastructure/tokenization/bpe_tokenizer.py",
+    "src/alignforge/infrastructure/data/__init__.py",
+    "src/alignforge/infrastructure/data/dataset_repository.py",
+    "src/alignforge/infrastructure/training/__init__.py",
+    "src/alignforge/infrastructure/training/base_trainer.py",
+    "src/alignforge/infrastructure/training/pretrainer.py",
+    "src/alignforge/infrastructure/training/sft_trainer.py",
+    "src/alignforge/infrastructure/training/dpo_trainer.py",
+    "src/alignforge/infrastructure/safety/__init__.py",
+    "src/alignforge/infrastructure/safety/guardrails.py",
+    "src/alignforge/infrastructure/evaluation/__init__.py",
+    "src/alignforge/infrastructure/evaluation/evaluators.py",
+    "src/alignforge/infrastructure/generation/__init__.py",
+    "src/alignforge/infrastructure/generation/generator.py",
+    "src/alignforge/presentation/__init__.py",
+    "src/alignforge/presentation/cli.py",
+    "tests/test_clean_arch_oop.py"
+  ],
+  "binary_goals": [
+    {
+      "id": "GOAL-1",
+      "description": "Establish Domain layer containing pure entities, value objects, and abstract interface contracts (ITokenizer, ICausalLM, IKVCache, ISafetyGuard, ITrainer, IEvaluator)",
+      "passed": true
+    },
+    {
+      "id": "GOAL-2",
+      "description": "Establish Application layer with use cases (CorrectGrammarUseCase, PretrainModelUseCase, SftModelUseCase, DpoModelUseCase, EvaluateModelUseCase, ProfileKVCacheUseCase) depending strictly on domain abstractions via dependency injection",
+      "passed": true
+    },
+    {
+      "id": "GOAL-3",
+      "description": "Establish Infrastructure layer implementing concrete PyTorch modules, tensor KV cache, BPE tokenization, datasets, trainers, safety filters, and evaluators obeying OOP 4 pillars (Encapsulation, Abstraction, Inheritance, Polymorphism) and SOLID",
+      "passed": true
+    },
+    {
+      "id": "GOAL-4",
+      "description": "Implement Presentation layer CLI and top-level facade maintaining complete backward compatibility with all existing public interfaces and scripts",
+      "passed": true
+    },
+    {
+      "id": "GOAL-5",
+      "description": "Pass 100% of unit tests including comprehensive test_clean_arch_oop.py verifying OOP principles and SOLID behaviors with zero regressions",
+      "passed": true
+    }
+  ],
+  "failure_policy": "REPLAN",
+  "verifier": {
+    "command": "uv run pytest tests/test_clean_arch_oop.py -v && uv run pytest",
+    "timeout_seconds": 60,
+    "falsification_proven": true,
+    "evidence_ref": "tests/test_clean_arch_oop.py (41/41 tests passing with exit code 0)"
+  }
+}

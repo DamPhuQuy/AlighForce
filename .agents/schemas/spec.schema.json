@@ -1,0 +1,188 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specs.sach2026.dev/schemas/spec.schema.json",
+  "title": "SpecAnchoredContract",
+  "description": "EARS and BDD contract structure. The offline harness additionally checks references and required conditions; this is not formal program verification.",
+  "type": "object",
+  "required": [
+    "spec_id",
+    "title",
+    "ears_requirements",
+    "bdd_scenarios"
+  ],
+  "properties": {
+    "spec_id": {
+      "type": "string",
+      "pattern": "^SPEC-[A-Z0-9_-]+$",
+      "description": "Unique identifier for the specification contract (e.g. SPEC-AUTH-001).",
+      "minLength": 1
+    },
+    "title": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 120,
+      "description": "Brief human-readable summary of the specification."
+    },
+    "version": {
+      "type": "string",
+      "default": "1.0.0",
+      "minLength": 1
+    },
+    "ears_requirements": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Easy Approach to Requirements Syntax (EARS) contract clauses.",
+      "items": {
+        "$ref": "#/$defs/EarsClause"
+      }
+    },
+    "bdd_scenarios": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Behavior-Driven Development (BDD) acceptance criteria.",
+      "items": {
+        "$ref": "#/$defs/BddScenario"
+      }
+    },
+    "falsification_plan": {
+      "type": "object",
+      "required": [
+        "reproducer_test",
+        "baseline_expected_failure"
+      ],
+      "properties": {
+        "reproducer_test": {
+          "type": "string",
+          "description": "Command or test path that deterministically fails on baseline.",
+          "minLength": 1
+        },
+        "baseline_expected_failure": {
+          "type": "string",
+          "description": "Expected error signature or assertion failure before the fix.",
+          "minLength": 1
+        },
+        "target_passing_assertion": {
+          "type": "string",
+          "description": "Assertion that must pass after the fix is implemented.",
+          "minLength": 1
+        }
+      }
+    },
+    "non_functional_constraints": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Latency, memory, security, or backwards-compatibility constraints."
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "EarsClause": {
+      "type": "object",
+      "required": [
+        "id",
+        "pattern",
+        "system_response",
+        "full_statement"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^REQ-[0-9]+$",
+          "minLength": 1
+        },
+        "pattern": {
+          "type": "string",
+          "enum": [
+            "ubiquitous",
+            "event_driven",
+            "state_driven",
+            "unwanted_behavior",
+            "optional_feature",
+            "complex"
+          ],
+          "description": "EARS template archetype.",
+          "minLength": 1
+        },
+        "precondition": {
+          "type": "string",
+          "description": "State condition (e.g., 'WHILE user is unauthenticated').",
+          "minLength": 1
+        },
+        "trigger": {
+          "type": "string",
+          "description": "Event trigger (e.g., 'WHEN valid login credentials are submitted').",
+          "minLength": 1
+        },
+        "system_response": {
+          "type": "string",
+          "description": "Mandatory response: 'THE SYSTEM SHALL [response]'.",
+          "minLength": 1
+        },
+        "full_statement": {
+          "type": "string",
+          "description": "Canonical full EARS sentence: [WHILE state] [WHEN trigger] [IF trigger] THE SYSTEM SHALL [response].",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "BddScenario": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "given",
+        "when",
+        "then",
+        "requirement_ids"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^SCN-[0-9]+$",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "given": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "description": "Initial system state and context."
+        },
+        "when": {
+          "type": "string",
+          "description": "The specific user action or external event.",
+          "minLength": 1
+        },
+        "then": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "description": "Observable system outcome and assertions."
+        },
+        "requirement_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^REQ-[0-9]+$"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "task_id": "TASK-NOTEBOOKS-PIPELINE",
+  "title": "Author Self-Contained Jupyter Notebooks Pipeline from src Primitives",
+  "status": "COMPLETED",
+  "spec_ref": "SPEC-SELF-CONTAINED-NOTEBOOKS",
+  "dependencies": [],
+  "execution_frontier": false,
+  "allowed_files": [
+    ".agents/TASK.md",
+    "README.md",
+    "process/features/active/self-contained-notebooks-pipeline/spec.json",
+    "process/features/active/self-contained-notebooks-pipeline/task.json",
+    "process/features/active/self-contained-notebooks-pipeline/task.md",
+    "notebooks/README.md",
+    "notebooks/01_pretrain_c0.ipynb",
+    "notebooks/02_sft_alignment.ipynb",
+    "notebooks/03_dpo_preference.ipynb",
+    "notebooks/04_eval_guardrails.ipynb",
+    "notebooks/alignforge_end_to_end_colab.ipynb",
+    "tests/test_notebooks.py"
+  ],
+  "binary_goals": [
+    {
+      "id": "GOAL-1",
+      "description": "Create modular stage-by-stage notebooks (01_pretrain_c0.ipynb, 02_sft_alignment.ipynb, 03_dpo_preference.ipynb, 04_eval_guardrails.ipynb) in notebooks/ with 1:1 copied code from src/",
+      "passed": true
+    },
+    {
+      "id": "GOAL-2",
+      "description": "Create turnkey end-to-end training notebook (alignforge_end_to_end_colab.ipynb) containing the full pretraining, LoRA SFT, DPO, and guardrailed generation workflow for Google Colab T4 execution",
+      "passed": true
+    },
+    {
+      "id": "GOAL-3",
+      "description": "Ensure zero dependencies on alignforge imports across all notebook cells (100% self-contained definitions)",
+      "passed": true
+    },
+    {
+      "id": "GOAL-4",
+      "description": "Implement automated validation test tests/test_notebooks.py verifying valid nbformat v4 structure, valid python code cell syntax, and absence of alignforge imports",
+      "passed": true
+    },
+    {
+      "id": "GOAL-5",
+      "description": "Document Colab notebook execution in README.md and pass all unit tests",
+      "passed": true
+    }
+  ],
+  "failure_policy": "REPLAN",
+  "verifier": {
+    "command": "uv run pytest tests/test_notebooks.py -v && uv run pytest",
+    "timeout_seconds": 60,
+    "falsification_proven": true,
+    "evidence_ref": "tests/test_notebooks.py (16/16 notebook tests passing, 57/57 total unit tests passing with exit code 0)"
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "spec_id": "SPEC-SELF-CONTAINED-NOTEBOOKS",
+  "title": "Self-Contained Jupyter Notebooks Pipeline for Colab GPU Training",
+  "version": "1.0.0",
+  "ears_requirements": [
+    {
+      "id": "REQ-1",
+      "pattern": "ubiquitous",
+      "system_response": "provide standalone Jupyter Notebooks in notebooks/ representing the complete AlignForge English training pipeline",
+      "full_statement": "THE SYSTEM SHALL provide standalone Jupyter Notebooks in notebooks/ representing the complete AlignForge English training pipeline."
+    },
+    {
+      "id": "REQ-2",
+      "pattern": "ubiquitous",
+      "system_response": "implement all tokenizer, model, cache, LoRA, DPO, guardrails, and evaluation logic via 1:1 copied code cells from src/ without importing from alignforge",
+      "full_statement": "THE SYSTEM SHALL implement all tokenizer, model, cache, LoRA, DPO, guardrails, and evaluation logic via 1:1 copied code cells from src/ without importing from alignforge."
+    },
+    {
+      "id": "REQ-3",
+      "pattern": "ubiquitous",
+      "system_response": "enable autonomous training on Google Colab with T4 GPU acceleration using device-agnostic PyTorch execution",
+      "full_statement": "THE SYSTEM SHALL enable autonomous training on Google Colab with T4 GPU acceleration using device-agnostic PyTorch execution."
+    },
+    {
+      "id": "REQ-4",
+      "pattern": "event_driven",
+      "trigger": "a user runs the notebook cells on Google Colab",
+      "system_response": "execute base pretraining, LoRA SFT, DPO alignment, and guardrailed generation producing valid checkpoints",
+      "full_statement": "WHEN a user runs the notebook cells on Google Colab THE SYSTEM SHALL execute base pretraining, LoRA SFT, DPO alignment, and guardrailed generation producing valid checkpoints."
+    },
+    {
+      "id": "REQ-5",
+      "pattern": "event_driven",
+      "trigger": "the test suite inspects all notebook files",
+      "system_response": "verify valid notebook JSON syntax, python compile validity of all code cells, and zero import references to alignforge",
+      "full_statement": "WHEN the test suite inspects all notebook files THE SYSTEM SHALL verify valid notebook JSON syntax, python compile validity of all code cells, and zero import references to alignforge."
+    }
+  ],
+  "bdd_scenarios": [
+    {
+      "id": "SCN-1",
+      "name": "Zero dependency on alignforge package",
+      "given": [
+        "Jupyter notebooks located in notebooks/"
+      ],
+      "when": "The code cells are inspected for module imports",
+      "then": [
+        "No cell contains 'import alignforge' or 'from alignforge'",
+        "All required classes and functions are defined directly within notebook cells"
+      ],
+      "requirement_ids": [
+        "REQ-1",
+        "REQ-2"
+      ]
+    },
+    {
+      "id": "SCN-2",
+      "name": "Executable training flow on Google Colab",
+      "given": [
+        "A Google Colab environment with T4 GPU"
+      ],
+      "when": "The training notebook is executed sequentially",
+      "then": [
+        "CUDA device is detected and utilized for tensor computations",
+        "Checkpoints for C0, C1-lora, and C2-dpo are exported"
+      ],
+      "requirement_ids": [
+        "REQ-3",
+        "REQ-4"
+      ]
+    },
+    {
+      "id": "SCN-3",
+      "name": "Automated syntax and structure verification",
+      "given": [
+        "The test suite runs tests/test_notebooks.py"
+      ],
+      "when": "Each notebook is parsed as JSON and code cells are compiled via python compile()",
+      "then": [
+        "All notebooks parse without syntax errors",
+        "All code cells compile cleanly"
+      ],
+      "requirement_ids": [
+        "REQ-5"
+      ]
+    }
+  ],
+  "non_functional_constraints": [
+    "Strictly zero imports from alignforge in notebooks",
+    "Valid nbformat v4 format (.ipynb JSON)",
+    "Device-agnostic execution supporting both CPU and CUDA T4 GPU"
+  ]
+}

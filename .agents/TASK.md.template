@@ -1,0 +1,51 @@
+# Task [ID] [Outcome]
+
+Use only the sections that support execution or handoff. For a small reversible edit, intent, files and a check can stay in the conversation. Remove placeholders before relying on this record.
+
+## Intent and acceptance
+
+User outcome and observable success. For a bug: reproduction command and expected symptom. For a feature: a short WHEN / THE SYSTEM SHALL clause and Given / When / Then scenario. For docs/mechanical work: the relevant static or diff check.
+
+## Scope
+
+<allowed_files>
+  <file>src/path/to/target.ts</file>
+  <file>test/path/to/reproducer.test.ts</file>
+  <file>.agents/TASK.md</file>
+</allowed_files>
+
+Record justified scope expansions before writing. Preserve unrelated changes.
+
+## Machine contracts and research artifacts (Big Task)
+
+- Machine spec & task DAG: `spec.json` and `task.json` (canonical for machine status/goals/dependencies). Validate with `python3 .agents/harness.py validate --spec spec.json --task task.json`.
+- Research/Web Research dossier v2 (when needed): `research-dossier.json` (grounded sources, claims, and execution readiness). Validate with `python3 .agents/harness.py research-dossier --input research-dossier.json --strict`.
+- Review & challenge ledger (when needed): `debate-ledger.json` (concrete counterexamples, trade-offs matrix, and disposition). Validate with `python3 .agents/harness.py debate-eval --input debate-ledger.json --strict`.
+Do not duplicate machine status as a second editable source of truth here.
+
+## R&D and evidence evaluation (Optional)
+
+- Decision question: exact architectural or capability question to resolve.
+- Resolved uncertainties: findings backed by primary specs, vendor docs, or local spikes.
+- Hypothesis & negative control: falsifiable condition that distinguishes success from failure.
+- Evidence references: cited sources (`SRC-*`) and verified claims (`CLM-*`).
+- Next executable slice: bounded implementation step, verifier command, and rollback plan.
+
+## Decisions and evidence
+
+- Confirmed fact: source path/line, revision or content hash; distinguish from hypothesis.
+- Research evidence: Tier-A/B cited specs/papers or verified local reproducer spike.
+- Adversarial trade-offs: Red-team attacks considered, Pareto-optimal choice, and accepted risk mitigations.
+- Decision: constraint, chosen approach and reason.
+- Verification: command, cwd/environment, exit code, timestamp, revision/diff identity, sanitized log reference.
+- Failed hypothesis: falsifying observation and what must change before retrying.
+
+## Continuation checkpoint
+
+- Current intent and constraints.
+- Changed files and base revision; pre-existing user changes.
+- Last verified behavior and evidence references; current unverified work.
+- Open risks, pending processes/worktrees and ownership.
+- Next concrete action and expected observation.
+
+After resume, inspect current Git status and relevant source, revalidate stale facts, and run a cheap check. Never infer completion from this note alone. Do not persist hidden reasoning transcripts, credentials or raw private data.

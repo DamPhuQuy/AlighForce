@@ -1,0 +1,97 @@
+{
+  "spec_id": "SPEC-CLEAN-ARCH-OOP",
+  "title": "Domain-Driven Clean Architecture and Strict OOP/SOLID Refactoring",
+  "version": "1.0.0",
+  "ears_requirements": [
+    {
+      "id": "REQ-1",
+      "pattern": "ubiquitous",
+      "system_response": "organize the codebase into concentric Domain-Driven Clean Architecture layers consisting of domain, application, infrastructure, and presentation",
+      "full_statement": "THE SYSTEM SHALL organize the codebase into concentric Domain-Driven Clean Architecture layers consisting of domain, application, infrastructure, and presentation."
+    },
+    {
+      "id": "REQ-2",
+      "pattern": "ubiquitous",
+      "system_response": "strictly uphold the four pillars of Object-Oriented Programming (Encapsulation, Abstraction, Inheritance, Polymorphism) across all domain models, contracts, and services",
+      "full_statement": "THE SYSTEM SHALL strictly uphold the four pillars of Object-Oriented Programming (Encapsulation, Abstraction, Inheritance, Polymorphism) across all domain models, contracts, and services."
+    },
+    {
+      "id": "REQ-3",
+      "pattern": "ubiquitous",
+      "system_response": "enforce SOLID design principles with inversion of control where application use cases depend exclusively on abstract domain ports",
+      "full_statement": "THE SYSTEM SHALL enforce SOLID design principles with inversion of control where application use cases depend exclusively on abstract domain ports."
+    },
+    {
+      "id": "REQ-4",
+      "pattern": "ubiquitous",
+      "system_response": "preserve complete functional compatibility with existing public APIs, CLI entrypoints, and PyTorch causal decoder-only execution models",
+      "full_statement": "THE SYSTEM SHALL preserve complete functional compatibility with existing public APIs, CLI entrypoints, and PyTorch causal decoder-only execution models."
+    },
+    {
+      "id": "REQ-5",
+      "pattern": "event_driven",
+      "trigger": "the test harness runs the test suite",
+      "system_response": "pass all existing and newly authored architecture/SOLID unit tests with zero regressions",
+      "full_statement": "WHEN the test harness runs the test suite THE SYSTEM SHALL pass all existing and newly authored architecture/SOLID unit tests with zero regressions."
+    }
+  ],
+  "bdd_scenarios": [
+    {
+      "id": "SCN-1",
+      "name": "Domain layer isolation and dependency inversion",
+      "given": [
+        "The domain layer contains entities, value objects, and abstract interface contracts"
+      ],
+      "when": "A use case in the application layer executes",
+      "then": [
+        "It interacts solely through abstract domain interfaces (ITokenizer, ICausalLM, IKVCache, ISafetyGuard, ITrainer)",
+        "Concrete infrastructure dependencies are injected via constructor arguments"
+      ],
+      "requirement_ids": [
+        "REQ-1",
+        "REQ-2",
+        "REQ-3"
+      ]
+    },
+    {
+      "id": "SCN-2",
+      "name": "Strict OOP 4 Pillars and SOLID compliance",
+      "given": [
+        "The model, cache, tokenizer, trainers, safety guards, and evaluators are defined as classes"
+      ],
+      "when": "The OOP unit verification suite runs",
+      "then": [
+        "Encapsulation is verified through protected state and properties",
+        "Abstraction is verified through formal ABC contracts",
+        "Inheritance is verified through clear subclass hierarchies",
+        "Polymorphism is verified through uniform interface execution across implementations"
+      ],
+      "requirement_ids": [
+        "REQ-2",
+        "REQ-3"
+      ]
+    },
+    {
+      "id": "SCN-3",
+      "name": "Preservation of test and CLI verification suite",
+      "given": [
+        "Existing 30 tests and CLI subcommands",
+        "Top-level backward compatibility facades"
+      ],
+      "when": "pytest and CLI entrypoints are invoked",
+      "then": [
+        "All original 30 tests pass without modification or breakage",
+        "CLI subcommands edit, benchmark, and profile operate identically"
+      ],
+      "requirement_ids": [
+        "REQ-4",
+        "REQ-5"
+      ]
+    }
+  ],
+  "non_functional_constraints": [
+    "Pure PyTorch primitives (torch.nn.Module) without HuggingFace Transformers high-level abstractions",
+    "Zero device breakage: device-agnostic CPU and CUDA execution",
+    "Clean directory separation conforming to Domain-Driven Design (domain, application, infrastructure, presentation)"
+  ]
+}

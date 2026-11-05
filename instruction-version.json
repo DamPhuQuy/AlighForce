@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "@damphuquy/agent-init",
+  "version": "4.0.1",
+  "framework": "SACH",
+  "frameworkVersion": "4.0.1",
+  "language": "en",
+  "role": "swe",
+  "description": "Instruction and governance template manifest for Spec-Anchored Cognitive Harness (SACH-2026).",
+  "installedAt": "2026-10-31T04:49:01.591Z",
+  "updatedAt": "2026-10-31T04:49:01.591Z",
+  "manifest": {
+    "core": [
+      "AGENTS.md",
+      "init.sh",
+      "instruction-version.json",
+      "process/README.md",
+      "process/.editorconfig"
+    ],
+    "controlLayer": [
+      ".agents/README.md",
+      ".agents/behavior.md",
+      ".agents/guardrails.md",
+      ".agents/conventions/naming.md",
+      ".agents/conventions/repo-learnings.md"
+    ],
+    "agentRuntime": [
+      ".agents/TASK.md.template",
+      ".agents/harness.py",
+      ".agents/schemas/spec.schema.json",
+      ".agents/schemas/task.schema.json",
+      ".agents/schemas/research-dossier.schema.json",
+      ".agents/schemas/debate-ledger.schema.json",
+      ".agents/schemas/capability-catalog.schema.json",
+      ".agents/capabilities.example.json",
+      ".agents/hooks/pre-tool-guard.py"
+    ],
+    "context": [
+      "process/context/all-context.md",
+      "process/context/planning/all-planning.md",
+      "process/context/tests/all-tests.md"
+    ],
+    "governance": [
+      "process/policy/policy-manifest.json",
+      "process/evals/eval-case.json",
+      "process/evals/fast-track-eval.md"
+    ],
+    "protocols": [
+      "process/development-protocols/adversarial-debate-protocol.md",
+      "process/development-protocols/all-development-protocols.md",
+      "process/development-protocols/code-mode-batching.md",
+      "process/development-protocols/context-memory-protocol.md",
+      "process/development-protocols/graph-engineering-protocol.md",
+      "process/development-protocols/harness-verification-protocol.md",
+      "process/development-protocols/implementation-standards.md",
+      "process/development-protocols/innovation-harness-protocol.md",
+      "process/development-protocols/mcp-lsp-protocol.md",
+      "process/development-protocols/observability-and-evals.md",
+      "process/development-protocols/orchestration.md",
+      "process/development-protocols/research-harness-protocol.md",
+      "process/development-protocols/runtime-harness-protocol.md",
+      "process/development-protocols/seven-layer-qa-protocol.md",
+      "process/development-protocols/tool-calling-protocol.md",
+      "process/development-protocols/worktree-isolation-protocol.md"
+    ],
+    "directories": [
+      "process/features/active/.gitkeep",
+      "process/features/backlog/.gitkeep",
+      "process/features/completed/.gitkeep"
+    ]
+  },
+  "updateStrategy": {
+    "slashCommand": "/update",
+    "checkCommand": "npm view @damphuquy/agent-init version",
+    "updateCommand": "npx @damphuquy/agent-init update",
+    "forceUpdateCommand": "npx @damphuquy/agent-init@latest . --force",
+    "preserveUserFiles": [
+      "AGENTS.md#validation_commands",
+      ".claude/settings.json",
+      ".agents/TASK.md",
+      ".agents/tasks/**",
+      ".agents/task.json",
+      ".agents/spec.json",
+      ".agents/memory/**",
+      ".agents/state/**",
+      ".agents/logs/**",
+      ".agents/skills/**",
+      ".agents/capabilities.json",
+      "process/features/**"
+    ],
+    "safeToOverwrite": [
+      ".agents/**",
+      "process/context/**",
+      "process/policy/**",
+      "process/evals/**",
+      "process/development-protocols/**",
+      "instruction-version.json"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DamPhuQuy/agent-instructions"
+  },
+  "managedFileHashes": {
+    "AGENTS.md": "6f08630587dd8c5310241bd8ead9e31cb977e8b7bcfd96d861a37d79c2477a62",
+    "init.sh": "1cbfbfc03848bd0162643d86ac393ff3baf011de6100442261dc07287e3e3cb6",
+    ".agents/README.md": "1434e78d60b0627d79fe43fa470aec7a12f00429b159793c4503b3a480c9c912",
+    ".agents/behavior.md": "aced52da6ba85897928a5d618c000193e117a81a0701e3f05c81b93f3075962f",
+    ".agents/guardrails.md": "d6f22cac0969201b1d764e48a3439384053f095a81a8ca43cbd07fc640b0d3e7",
+    ".agents/conventions/naming.md": "65234af3b26efd3b21662cc05853a82dc541a5aadf632c85820954760703ad60",
+    ".agents/conventions/repo-learnings.md": "e13359dc2a77478217b7df9af8c3de41634a43c0028f70567d07c4d3531013c8",
+    ".agents/TASK.md.template": "3b4f225747a177d8b5ea39e7fc2d81a64c0b4d569d686d2b5f0a1ed96e34ab40",
+    ".agents/harness.py": "32848726f8cc6baff0916239db619a97dc1f4c4577159f6c29db12e902d09c73",
+    ".agents/schemas/spec.schema.json": "ed8d547993183a07433677ddc130e4de53e2f691155d34ffea5f6dfcf0cbc31f",
+    ".agents/schemas/task.schema.json": "10f2ccd984a3569bd8bcda7d8c4bbcc491908c44f9548079fb56a9bccf21d828",
+    ".agents/schemas/research-dossier.schema.json": "76ec570bce1ea4e75deb0c58c5116933df91c4e85a22d2e63cd960cff4260dd8",
+    ".agents/schemas/debate-ledger.schema.json": "414106cca8c2f268d8cba850ac5e14ff9f1b5a37f56f5b0aba1accd533b5093b",
+    ".agents/schemas/capability-catalog.schema.json": "4b694f592f75ea015d8de49f1942259f0f284ddfc23081088c4d50150b8fa96b",
+    ".agents/capabilities.example.json": "503b439758eb8837414fff0ed643aff3008b575b695a6c578871978cf0efcc01",
+    ".agents/hooks/pre-tool-guard.py": "042f5b873134d227e9f4e4c4baf5d74b16bcd311fd275617d34d1382c76c48f0",
+    "process/README.md": "5250e946baf6bfb2a2e4f8b2ac1dff72b6ecf4b456defcd93d0e8a9100966420",
+    "process/.editorconfig": "c30c2ab6e617771b384a748a6a239dcc0f1c3de77e3434ffefc9c03621036dc9",
+    "process/features/active/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "process/features/completed/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "process/features/backlog/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "process/context/all-context.md": "56684a34cdefc71ebbc4925d075530fa167d1fef155557f8427de8988a1c7e76",
+    "process/context/planning/all-planning.md": "72a181b40055602fe5c424f7150d8058478943970db9b66eb8028532b3e0da72",
+    "process/context/tests/all-tests.md": "bfbfe06eabc17461d79df2ab66b39c627bcf86f4fc139d45c0525d894a5272d4",
+    "process/development-protocols/all-development-protocols.md": "0f4ca592b75b06b384638c2d6b6ecb2dd7f933b6a9c10d58062d2d1a90bba209",
+    "process/development-protocols/context-memory-protocol.md": "5d4160fc30a94ef663e4a528fe8199ad848200bdfcb29aecb2a3a767fcc27d38",
+    "process/development-protocols/graph-engineering-protocol.md": "2579c10b1af3bdc3580176d5d31ccbd29fc0b1a99eebe70b4eb226e3c8b5289e",
+    "process/development-protocols/runtime-harness-protocol.md": "76551587247f422c309fd3887745a59c8c77a1d4069f579b9574d58fa1ae6b8a",
+    "process/development-protocols/orchestration.md": "d9832f83210013a2f8b3b5da92d43a33e432dcf342299290bd19aac5ea1b3d94",
+    "process/development-protocols/adversarial-debate-protocol.md": "792b22657fcb1f0609cff03ec256df5053faf2fce5260739c3cdf0c91c02ee59",
+    "process/development-protocols/implementation-standards.md": "eddfa8478610c5dab88ace6baf62ab50b9f58acedd136eef6bf01a977914dd0f",
+    "process/development-protocols/mcp-lsp-protocol.md": "bb201dde59ac19e6934156fe510ee7989b76ee0e63497b81f1e54bde012af75c",
+    "process/development-protocols/research-harness-protocol.md": "1494ee76df90d98aae89b8ce70d8d40d3244e3bf6f42917e0a163df9d11b3be5",
+    "process/development-protocols/innovation-harness-protocol.md": "9dfdbd8ad2066b6853009d94c4a5484f20b35a9670f82ce16c155b8abf8071c4",
+    "process/development-protocols/observability-and-evals.md": "77e4e74bba88529bc56244b1369c2d4f3cbd1b00b21f55995c56964db8eb277c",
+    "process/development-protocols/harness-verification-protocol.md": "a0245093c513db1e7a4f74397adfed891c3166ba30b9dc09fac845cbd1a68b78",
+    "process/development-protocols/worktree-isolation-protocol.md": "fdbf719626ddb3e39f7ac4005594dd647d19034b59d4641ac6ac6f02b6074631",
+    "process/development-protocols/code-mode-batching.md": "04a24ab96f4a22899971987e231a952cb30939a9051769f343a2d06f6708d26a",
+    "process/development-protocols/seven-layer-qa-protocol.md": "41a4d763d998348bcaa3862a13a41def630d4f94542a3d71f69bf65a0896dd63",
+    "process/development-protocols/tool-calling-protocol.md": "e2a57f2a2db9a8a08e70a42452e1fe14b9a643befb137a2ec9dec82abd859847",
+    "process/policy/policy-manifest.json": "0669920848e67c308a804b950e0ffcb09b338a981778f3a4d966053b8e104023",
+    "process/evals/eval-case.json": "af2488091777ded8d5b9a173bbd7357bc7f34486708dc5db330504c5aa9ab964",
+    "process/evals/fast-track-eval.md": "375735d96790d04fca2ce00b8d46c861bf8a38460d6491277b4cf01dc5ea2e95"
+  }
+}

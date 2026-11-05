@@ -1,0 +1,204 @@
+{
+  "spec_id": "SPEC-ALIGNFORGE-MVP",
+  "title": "AlignForge English - From-Scratch Decoder-Only LM with LoRA, DPO, and Guardrails",
+  "version": "1.0.0",
+  "ears_requirements": [
+    {
+      "id": "REQ-1",
+      "pattern": "event_driven",
+      "trigger": "a user submits a short English sentence for grammar error correction",
+      "system_response": "generate a candidate corrected sentence without intentionally altering meaning or return an explicit unverified/failure status",
+      "full_statement": "WHEN a user submits a short English sentence for grammar error correction THE SYSTEM SHALL generate a candidate corrected sentence without intentionally altering meaning or return an explicit unverified/failure status."
+    },
+    {
+      "id": "REQ-2",
+      "pattern": "event_driven",
+      "trigger": "a user submits a short English sentence for paraphrase generation",
+      "system_response": "generate an alternative phrasing labeled explicitly as an experimental candidate requiring meaning review",
+      "full_statement": "WHEN a user submits a short English sentence for paraphrase generation THE SYSTEM SHALL generate an alternative phrasing labeled explicitly as an experimental candidate requiring meaning review."
+    },
+    {
+      "id": "REQ-3",
+      "pattern": "event_driven",
+      "trigger": "a user specifies a target checkpoint flag among base, full_sft, lora_sft, and dpo",
+      "system_response": "load the corresponding model weights and configuration to perform inference",
+      "full_statement": "WHEN a user specifies a target checkpoint flag among base, full_sft, lora_sft, and dpo THE SYSTEM SHALL load the corresponding model weights and configuration to perform inference."
+    },
+    {
+      "id": "REQ-4",
+      "pattern": "ubiquitous",
+      "system_response": "implement a custom BPE tokenizer and a causal Transformer decoder-only architecture entirely from scratch using PyTorch primitives",
+      "full_statement": "THE SYSTEM SHALL implement a custom BPE tokenizer and a causal Transformer decoder-only architecture entirely from scratch using PyTorch primitives."
+    },
+    {
+      "id": "REQ-5",
+      "pattern": "ubiquitous",
+      "system_response": "provide a dynamic tensor KV Cache per attention layer that yields numerically equivalent logits to uncached execution across context lengths 128, 512, 1024, and 2048",
+      "full_statement": "THE SYSTEM SHALL provide a dynamic tensor KV Cache per attention layer that yields numerically equivalent logits to uncached execution across context lengths 128, 512, 1024, and 2048."
+    },
+    {
+      "id": "REQ-6",
+      "pattern": "complex",
+      "precondition": "WHILE training on the identical CoEdIT GEC dataset split and compute budget",
+      "trigger": "WHEN comparing parameter efficiency and task performance",
+      "system_response": "execute a controlled comparison between full SFT and self-written LoRA on Wq and Wv projection matrices",
+      "full_statement": "WHILE training on the identical CoEdIT GEC dataset split and compute budget WHEN comparing parameter efficiency and task performance THE SYSTEM SHALL execute a controlled comparison between full SFT and self-written LoRA on Wq and Wv projection matrices."
+    },
+    {
+      "id": "REQ-7",
+      "pattern": "complex",
+      "precondition": "WHILE holding the reference policy frozen as the C1-lora checkpoint",
+      "trigger": "WHEN training on pairwise paraphrase preference data",
+      "system_response": "optimize the policy using the Direct Preference Optimization objective with response-token log-likelihood masking",
+      "full_statement": "WHILE holding the reference policy frozen as the C1-lora checkpoint WHEN training on pairwise paraphrase preference data THE SYSTEM SHALL optimize the policy using the Direct Preference Optimization objective with response-token log-likelihood masking."
+    },
+    {
+      "id": "REQ-8",
+      "pattern": "unwanted_behavior",
+      "trigger": "WHEN input text is empty, exceeds token bounds, or exhibits prompt injection patterns",
+      "system_response": "reject the request or emit a structured invalid generation status without executing malicious instruction payloads",
+      "full_statement": "WHEN input text is empty, exceeds token bounds, or exhibits prompt injection patterns THE SYSTEM SHALL reject the request or emit a structured invalid generation status without executing malicious instruction payloads."
+    },
+    {
+      "id": "REQ-9",
+      "pattern": "ubiquitous",
+      "system_response": "evaluate checkpoints using multi-reference GEC metrics on JFLEG, preference win rates on held-out paraphrase data, blinded LLM judge comparisons, and analyze at least five real model failure cases",
+      "full_statement": "THE SYSTEM SHALL evaluate checkpoints using multi-reference GEC metrics on JFLEG, preference win rates on held-out paraphrase data, blinded LLM judge comparisons, and analyze at least five real model failure cases."
+    },
+    {
+      "id": "REQ-10",
+      "pattern": "event_driven",
+      "trigger": "WHEN invoked via command-line interface",
+      "system_response": "provide inspectable sentence editing, benchmarking commands, and complete one-command reproducible deliverables accompanied by a 6 to 8 page scientific report",
+      "full_statement": "WHEN invoked via command-line interface THE SYSTEM SHALL provide inspectable sentence editing, benchmarking commands, and complete one-command reproducible deliverables accompanied by a 6 to 8 page scientific report."
+    }
+  ],
+  "bdd_scenarios": [
+    {
+      "id": "SCN-1",
+      "name": "Grammar correction execution",
+      "given": ["A trained lora_sft model checkpoint is loaded and operational"],
+      "when": "A user provides the sentence 'She go to school every day.' with task set to fix_grammar",
+      "then": [
+        "The system produces a candidate sentence edit",
+        "The status field reports candidate_unverified or appropriate failure status",
+        "Measured latency in milliseconds is recorded in the response payload"
+      ],
+      "requirement_ids": ["REQ-1"]
+    },
+    {
+      "id": "SCN-2",
+      "name": "Paraphrase candidate generation",
+      "given": ["A trained dpo model checkpoint is loaded"],
+      "when": "A user provides the sentence 'I cannot attend the meeting today.' with task set to paraphrase",
+      "then": [
+        "The system generates a candidate rephrasing",
+        "The response explicitly flags that semantic equivalence is unverified by automated means",
+        "The model version dpo-v1 is recorded in the output"
+      ],
+      "requirement_ids": ["REQ-2"]
+    },
+    {
+      "id": "SCN-3",
+      "name": "Model checkpoint selection",
+      "given": ["Checkpoints base, full_sft, lora_sft, and dpo are present in artifacts"],
+      "when": "The user specifies --model lora_sft via the CLI interface",
+      "then": [
+        "The CLI initializes the causal Transformer with LoRA adapter weights attached to Wq and Wv",
+        "The active model checkpoint is displayed in the CLI output"
+      ],
+      "requirement_ids": ["REQ-3"]
+    },
+    {
+      "id": "SCN-4",
+      "name": "Transformer decoder-only core and tokenizer verification",
+      "given": ["PyTorch environment with torch.nn.Module implementation and custom trained BPE tokenizer"],
+      "when": "Unit test suite for tokenizer round-trip, causal masking, RMSNorm, and multi-head attention forward/backward is executed",
+      "then": [
+        "Tokenizer round-trip text encoding and decoding matches exactly",
+        "Upper-triangular attention mask prevents tokens from attending to subsequent positions",
+        "Gradient flows through all trainable parameters without numerical NaN or inf values"
+      ],
+      "requirement_ids": ["REQ-4"]
+    },
+    {
+      "id": "SCN-5",
+      "name": "KV Cache dynamic profiling and equivalence",
+      "given": ["Base Transformer model loaded on GPU or CPU"],
+      "when": "Autoregressive generation runs across context lengths 128, 512, 1024, and 2048 with KV Cache toggled ON vs OFF",
+      "then": [
+        "Output logits between cached and uncached forward passes match within a tolerance of atol=1e-5",
+        "Tokens per second, TTFT, TPOT, and peak VRAM are recorded for all 4 context lengths",
+        "Summary profiling plots and CSV files are exported to reports/"
+      ],
+      "requirement_ids": ["REQ-5"]
+    },
+    {
+      "id": "SCN-6",
+      "name": "Controlled LoRA vs Full SFT evaluation",
+      "given": ["C0 base checkpoint and filtered CoEdIT GEC training subset"],
+      "when": "Both Full SFT and self-written LoRA (r=8, alpha=16) are trained under identical epochs and learning rate schedules",
+      "then": [
+        "Trainable parameter counts, optimizer state sizes, training wall-clock time, and peak VRAM are logged",
+        "LoRA achieves >= 80% parameter reduction compared to full fine-tuning",
+        "Both checkpoints are evaluated on the held-out validation set and external benchmark"
+      ],
+      "requirement_ids": ["REQ-6"]
+    },
+    {
+      "id": "SCN-7",
+      "name": "DPO preference optimization execution",
+      "given": ["Frozen C1-lora reference policy and paired paraphrasing preference dataset"],
+      "when": "DPO loss is computed over chosen and rejected responses with prompt token masking",
+      "then": [
+        "Loss decreases monotonically during training iterations",
+        "Chosen-over-rejected conditional log-likelihood margin improves on held-out validation pairs",
+        "Reference model parameters remain unchanged throughout training"
+      ],
+      "requirement_ids": ["REQ-7"]
+    },
+    {
+      "id": "SCN-8",
+      "name": "Input and output guardrail enforcement",
+      "given": ["Application inference pipeline with active safety filters"],
+      "when": "An adversarial input containing prompt injection ('Ignore previous instructions...') or exceeding maximum token budget is provided",
+      "then": [
+        "The system refuses to execute the instructional override",
+        "Status input_rejected or invalid_generation is returned with clean diagnostic logs",
+        "Evaluation on deepset/prompt-injections test set outputs detection rate and false positive rate"
+      ],
+      "requirement_ids": ["REQ-8"]
+    },
+    {
+      "id": "SCN-9",
+      "name": "Multi-dimensional objective evaluation and error analysis",
+      "given": ["Checkpoints C0, C1-full, C1-lora, and C2-dpo and held-out test splits"],
+      "when": "Automated evaluation script runs across JFLEG benchmark, preference test split, and external LLM judge API",
+      "then": [
+        "GLEU, exact-match, and edit rates on JFLEG are computed and tabulated",
+        "Pairwise win/loss/tie rates from the external judge are recorded with rubric scores",
+        "At least five real model failure cases are documented with prompt, expected output, observed output, cause hypothesis, and mitigation"
+      ],
+      "requirement_ids": ["REQ-9"]
+    },
+    {
+      "id": "SCN-10",
+      "name": "CLI demo and project deliverable verification",
+      "given": ["Repository checkout with trained artifacts and report documentation"],
+      "when": "User runs the alignforge CLI edit command and executes reproduction scripts",
+      "then": [
+        "CLI outputs candidate edits and latency in under 5 seconds",
+        "One-click reproduction script reproduces benchmark tables and profiling plots",
+        "Scientific report in IEEE/ICLR format (6 to 8 pages) compiles successfully"
+      ],
+      "requirement_ids": ["REQ-10"]
+    }
+  ],
+  "non_functional_constraints": [
+    "Pure PyTorch implementation (torch.nn.Module) for all network, attention, cache, and generation code without pre-packaged causal LM classes",
+    "Single GPU hardware budget (RTX 3060 12GB / RTX 4090 24GB or Colab T4/L4)",
+    "Strict no-labeling data policy: public external datasets only, no synthetic data generation or manual annotation",
+    "Model scale bounded to approximately 3M parameters (4 layers, d_model=256, 4 heads, vocab 2048)",
+    "Execution timeline strictly bounded to 4 weeks across 4 formal milestones"
+  ]
+}

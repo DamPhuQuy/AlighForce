@@ -1,0 +1,165 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specs.sach2026.dev/schemas/task.schema.json",
+  "title": "TaskDagSchema",
+  "description": "Task dependencies, scope, verifier references and observable acceptance state. Goal counts do not need to increase after every tool call.",
+  "type": "object",
+  "required": [
+    "task_id",
+    "title",
+    "status",
+    "spec_ref",
+    "dependencies",
+    "allowed_files",
+    "binary_goals",
+    "verifier"
+  ],
+  "properties": {
+    "task_id": {
+      "type": "string",
+      "pattern": "^TASK-[A-Z0-9_-]+$",
+      "description": "Unique task node identifier in the DAG.",
+      "minLength": 1
+    },
+    "title": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 120
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "PENDING",
+        "READY",
+        "IN_PROGRESS",
+        "COMPLETED",
+        "FAILED",
+        "BLOCKED"
+      ],
+      "default": "PENDING",
+      "minLength": 1
+    },
+    "spec_ref": {
+      "type": "string",
+      "description": "Reference to the anchored specification (e.g. SPEC-AUTH-001).",
+      "minLength": 1
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Parent task IDs that must reach COMPLETED status before this task is actionable.",
+      "uniqueItems": true
+    },
+    "execution_frontier": {
+      "type": "boolean",
+      "default": false,
+      "description": "True only for a pending/ready task whose dependencies are all completed."
+    },
+    "allowed_files": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Exhaustive file paths allowed to be mutated (Scope Invariant).",
+      "uniqueItems": true
+    },
+    "binary_goals": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Observable binary acceptance criteria; passed values are claims requiring verification evidence.",
+      "items": {
+        "$ref": "#/$defs/BinaryGoal"
+      }
+    },
+    "failure_policy": {
+      "type": "string",
+      "enum": [
+        "REPLAN",
+        "PRUNE",
+        "ESCALATE"
+      ],
+      "default": "REPLAN",
+      "description": "Contingency action when retry budget is exhausted.",
+      "minLength": 1
+    },
+    "verifier": {
+      "type": "object",
+      "required": [
+        "command"
+      ],
+      "properties": {
+        "command": {
+          "type": "string",
+          "description": "Single-file reproduction or focused verifier command.",
+          "minLength": 1
+        },
+        "timeout_seconds": {
+          "type": "integer",
+          "default": 30,
+          "minimum": 1
+        },
+        "falsification_proven": {
+          "type": "boolean",
+          "default": false,
+          "description": "True once baseline failure has been empirically observed before editing code."
+        },
+        "evidence_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Sanitized test log reference, with command, exit code, revision and timestamp. A reference is not authenticated by schema validation."
+        }
+      },
+      "additionalProperties": false
+    },
+    "worktree": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "branch": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "BinaryGoal": {
+      "type": "object",
+      "required": [
+        "id",
+        "description",
+        "passed"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^GOAL-[0-9]+$",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "passed": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

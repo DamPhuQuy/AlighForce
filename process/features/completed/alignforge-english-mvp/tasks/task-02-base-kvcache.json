@@ -1,0 +1,48 @@
+{
+  "task_id": "TASK-WEEK2-BASE-KVCACHE",
+  "title": "Milestone 2: Base Model Pretraining C0 and Dynamic KV Cache Multi-Length Profiling",
+  "status": "COMPLETED",
+  "spec_ref": "SPEC-ALIGNFORGE-MVP",
+  "dependencies": [
+    "TASK-WEEK1-FOUNDATION"
+  ],
+  "execution_frontier": false,
+  "allowed_files": [
+    ".agents/TASK.md",
+    "configs/model.yaml",
+    "process/features/active/alignforge-english-mvp/task.md",
+    "src/alignforge/kv_cache.py",
+    "src/alignforge/generate.py",
+    "src/alignforge/train_pretrain.py",
+    "tests/test_cache.py",
+    "reports/kv_cache_profiling.csv"
+  ],
+  "binary_goals": [
+    {
+      "id": "GOAL-201",
+      "description": "Pretrain causal LM on TinyStories budget (~1-3M tokens); converge and save base checkpoint C0",
+      "passed": true
+    },
+    {
+      "id": "GOAL-202",
+      "description": "Dynamic tensor KV Cache per layer implemented from scratch for autoregressive generation",
+      "passed": true
+    },
+    {
+      "id": "GOAL-203",
+      "description": "Cached vs uncached generation logits equivalence verified (torch.allclose with atol=1e-5)",
+      "passed": true
+    },
+    {
+      "id": "GOAL-204",
+      "description": "KV Cache profiling completed across context lengths 128, 512, 1024, 2048 measuring tokens/s, TTFT, TPOT, and peak VRAM with CSV/plot export",
+      "passed": true
+    }
+  ],
+  "verifier": {
+    "command": "python3 -m pytest tests/test_cache.py -v",
+    "timeout_seconds": 120,
+    "falsification_proven": true,
+    "evidence_ref": "uv run pytest tests/test_cache.py (3 passed in 0.85s, exit 0, profiling exported to reports/kv_cache_profiling.csv)"
+  }
+}
